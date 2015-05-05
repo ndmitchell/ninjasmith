@@ -1,0 +1,13 @@
+
+vGlobal = version1
+
+rule record
+    # produces --lit version3 version2
+    command = record --out $out --lit $vGlobal $vBuild
+
+vGlobal = version2
+
+build output: record
+    vBuild = $vGlobal
+
+vGlobal = version3
