@@ -2,6 +2,7 @@
 
 module Main(main) where
 
+import Control.Applicative
 import Control.Exception.Extra
 import Control.Monad
 import System.Directory.Extra
