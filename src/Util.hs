@@ -1,16 +1,30 @@
 {-# LANGUAGE RecordWildCards, TupleSections #-}
 
 module Util(
-    digits,
+    digits, unique,
     pick, pick1, split, reps, reps1,
     ) where
 
 import Control.Monad
+import Data.IORef
+import Data.Tuple.Extra
+import System.IO.Unsafe
 import System.Random hiding (split)
 
 
 digits :: String -> [String]
 digits pre = [pre ++ show i | i <- [1..9]]
+
+
+{-# NOINLINE uniqueRef #-}
+uniqueRef :: IORef Integer
+uniqueRef = unsafePerformIO $ newIORef 0
+
+unique :: IO String
+unique = do
+    i <- atomicModifyIORef uniqueRef $ both succ . dupe
+    return $ "unique" ++ show i
+
 
 pick :: [a] -> IO a
 pick xs = do

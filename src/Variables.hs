@@ -5,7 +5,6 @@ module Variables(variables) where
 import Type
 import Util
 import Control.Monad
-import Data.Unique
 
 
 variables :: IO [Action]
@@ -16,10 +15,10 @@ variables = do
     return [WriteNinja nin, RunNinja ["-j5"]]
 
 addGroup op xs = do
-    u <- newUnique
+    u <- unique
     (pre, midpost) <- split xs
     (mid, post) <- split midpost
-    return $ pre ++ [op (show (hashUnique u) ++ ".ninja") mid] ++ post
+    return $ pre ++ [op (u ++ ".ninja") mid] ++ post
 
 newAssign = liftM2 (,) (pick $ digits "v") (fmap concat $ reps (0,3) $ pick $ digits "" ++ digits "$v")
 
