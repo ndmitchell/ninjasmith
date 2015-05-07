@@ -10,8 +10,8 @@ import Data.Unique
 
 variables :: IO [Action]
 variables = do
-    p <- apply (0,50) (pick1 [addTopVar, addBuildVar]) zero
-    p <- apply (0,6 ) (pick1 [addGroup Include, addGroup Subninja]) p
+    p <- reps1 (0,50) (pick1 [addTopVar, addBuildVar]) zero
+    p <- reps1 (0,6 ) (pick1 [addGroup Include, addGroup Subninja]) p
     let nin = Rule "r" [("command","record --out $out --lit " ++ unwords (map ($ "$v") digitsF))] : p
     return [WriteNinja nin, RunNinja ["-j5"]]
 

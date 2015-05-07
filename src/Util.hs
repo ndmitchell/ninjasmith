@@ -2,9 +2,10 @@
 
 module Util(
     digits, digitsF,
-    pick, pick1, split, apply,
+    pick, pick1, split, reps, reps1,
     ) where
 
+import Control.Monad
 import System.Random hiding (split)
 
 
@@ -27,10 +28,10 @@ split xs = do
     i <- randomRIO (0, length xs)
     return $ splitAt i xs
 
-apply :: (Int,Int) -> (a -> IO a) -> a -> IO a
-apply rng op x = do
+reps :: (Int, Int) -> IO a -> IO [a]
+reps rng x = do
     i <- randomRIO rng
-    f i x
-    where
-        f 0 x = return x
-        f i x = f (i-1) =<< op x
+    replicateM i x
+
+reps1 :: (Int,Int) -> (a -> IO a) -> a -> IO a
+reps1 rng op x = foldM (flip ($)) x =<< reps rng (return op)
