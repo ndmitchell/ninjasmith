@@ -1,0 +1,7 @@
+
+rule record
+    # produces --lit hello
+    command = goodbye
+    command = record --out $out --lit hello $command
+
+build output: record
