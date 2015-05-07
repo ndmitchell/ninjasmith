@@ -3,8 +3,8 @@
 module Variables(variables) where
 
 import Type
+import Util
 import Control.Monad
-import System.Random
 import Data.Unique
 
 
@@ -36,32 +36,3 @@ addBuildVar xs = forM xs $ \x -> case x of
 
 zero =
     [Build [i "f"] "r" [] [] [] [] | i <- digitsF]
-
-digits :: [String]
-digits = map show [1..9]
-
-digitsF :: [String -> String]
-digitsF = map (flip (++)) digits
-
-
-randomElem :: [a] -> IO a
-randomElem xs = do
-    i <- randomRIO (0, length xs - 1)
-    return $ xs !! i
-
-randomSplit :: [a] -> IO ([a], [a])
-randomSplit xs = do
-    i <- randomRIO (0, length xs)
-    return $ splitAt i xs
-
-
-oneOf :: [a -> IO a] -> (a -> IO a)
-oneOf fs x = ($ x) =<< randomElem fs
-
-perturb :: Int -> (a -> IO a) -> a -> IO a
-perturb mx op x = do
-    i <- randomRIO (0,mx)
-    f i x
-    where
-        f 0 x = return x
-        f i x = f (i-1) =<< op x
