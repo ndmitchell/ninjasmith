@@ -10,6 +10,7 @@ import System.Process.Extra
 import Data.List
 import Data.Hashable
 import Data.IORef
+import System.Environment
 import System.FilePath
 import qualified Data.ByteString.Char8 as BS
 import Variables
@@ -34,11 +35,13 @@ test actions = do
             ref <- newIORef []
             let add = do x <- record; modifyIORef ref (x:)
             withCurrentDirectory ("temp-" ++ exe) $ do
-                forM_ actions $ \x -> case x of
+                forM_ (zip [1..] actions) $ \(i,x) -> case x of
                     Prepare act -> act
                     WriteNinja stmts -> writeNinja stmts
                     WriteFile file x -> writeFile file x
-                    RunNinja args -> do system_ $ unwords $ exe:args; add
+                    RunNinja args -> do
+                        setEnv "RECORD" $ "record" ++ show i
+                        system_ $ unwords $ exe:args; add
             readIORef ref
 
 
