@@ -56,6 +56,6 @@ main = do
             ,Prepare $ renameFile (takeFileName ex) "build.ninja"
             ,RunNinja []]
 
-    forM_ [1..2] $ \i -> do
+    forM_ [1..10] $ \i -> do
         putStrLn $ "# Testing variables " ++ show i
         test =<< variables
