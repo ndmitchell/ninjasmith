@@ -7,9 +7,11 @@ import Control.Exception.Extra
 import Control.Monad
 import System.Directory.Extra
 import System.Process.Extra
-import Data.List
+import Data.List.Extra
+import Data.Maybe
 import Data.Hashable
 import Data.IORef
+import Data.Tuple.Extra
 import System.Environment
 import System.FilePath
 import qualified Data.ByteString.Char8 as BS
@@ -22,6 +24,11 @@ test :: [Action] -> IO ()
 test actions = do
     a <- run "ninja"
     b <- run "shake"
+    forM_ (nubOrd $ map fst $ a ++ b) $ \x -> do
+        let aa = lookup x a
+        let bb = lookup x b
+        when (aa /= bb) $ do
+            putStrLn $ "Different " ++ (if isJust aa == isJust bb then "value" else "existance") ++ " for " ++ show x
     when (a /= b) $ error "Mismatch"
     where
         record = do
@@ -42,7 +49,8 @@ test actions = do
                     RunNinja args -> do
                         setEnv "RECORD" $ "record" ++ show i
                         system_ $ unwords $ exe:args; add
-            readIORef ref
+            xs <- readIORef ref
+            return $ concat $ zipWith (\i xs -> map (first (i,)) xs) [1..] $ reverse xs
 
 
 main :: IO ()
