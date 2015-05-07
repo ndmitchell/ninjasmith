@@ -65,13 +65,3 @@ perturb mx op x = do
     where
         f 0 x = return x
         f i x = f (i-1) =<< op x
-
-{-
-options:
-
-descend into an Include
-descend into a Subninja
-write out a rule
-write out a build
-write out a variable
--}
