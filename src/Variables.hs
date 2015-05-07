@@ -21,16 +21,16 @@ addGroup op xs = do
     (mid, post) <- split midpost
     return $ pre ++ [op (show (hashUnique u) ++ ".ninja") mid] ++ post
 
+newAssign = liftM2 (,) (pick $ digits "v") (pick $ digits "" ++ digits "$v")
+
 addTopVar xs = do
     (pre, post) <- split xs
-    to <- pick $ digits "v"
-    from <- pick $ digits "" ++ digits "$v"
+    (to,from) <- newAssign
     return $ pre ++ [Variable to from] ++ post
 
 addBuildVar xs = forM xs $ \x -> case x of
     b@Build{} -> do
-        to <- pick $ digits "v"
-        from <- pick $ digits "" ++ digits "$v"
+        (to,from) <- newAssign
         return b{buildBind = (to, from) : buildBind b}
     x -> return x
 
