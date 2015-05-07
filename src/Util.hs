@@ -1,7 +1,7 @@
 {-# LANGUAGE RecordWildCards, TupleSections #-}
 
 module Util(
-    digits, digitsF,
+    digits,
     pick, pick1, split, reps, reps1,
     ) where
 
@@ -9,11 +9,8 @@ import Control.Monad
 import System.Random hiding (split)
 
 
-digits :: [String]
-digits = map show [1..9]
-
-digitsF :: [String -> String]
-digitsF = map (flip (++)) digits
+digits :: String -> [String]
+digits pre = [pre ++ show i | i <- [1..9]]
 
 pick :: [a] -> IO a
 pick xs = do
