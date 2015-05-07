@@ -4,7 +4,7 @@ module Type(Stmt(..), Action(..), writeNinja) where
 
 import Control.Monad.Extra
 
-data Action = WriteNinja [Stmt] | RunNinja [String] | Prepare (IO ())
+data Action = WriteNinja [Stmt] | WriteFile FilePath String | RunNinja [String] | Prepare (IO ())
 
 data Stmt
     = Rule {ruleName :: String, ruleBind :: [(String, String)]}

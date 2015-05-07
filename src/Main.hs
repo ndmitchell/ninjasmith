@@ -37,6 +37,7 @@ test actions = do
                 forM_ actions $ \x -> case x of
                     Prepare act -> act
                     WriteNinja stmts -> writeNinja stmts
+                    WriteFile file x -> writeFile file x
                     RunNinja args -> do system_ $ unwords $ exe:args; add
             readIORef ref
 
