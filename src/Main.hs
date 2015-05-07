@@ -14,6 +14,7 @@ import System.FilePath
 import qualified Data.ByteString.Char8 as BS
 import Variables
 import Type
+import Prelude
 
 
 test :: [Action] -> IO ()
@@ -40,6 +41,7 @@ test actions = do
             readIORef ref
 
 
+main :: IO ()
 main = do
     putStr "Compiling record... "
     createDirectoryIfMissing True "temp-record"
