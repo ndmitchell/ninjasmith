@@ -31,7 +31,7 @@ main = do
         Out x -> do
             res <- fmap catMaybes $ forM xs $ \x -> case x of
                 Lit s -> return $ Just s
-                Env s -> Just <$> getEnv s
+                Env s -> do x <- getEnv s; return $ Just $ "$" ++ s ++ " = " ++ x
                 In s -> do src <- BS.readFile s; return $ Just $ s ++ " = " ++ show (hash src)
                 _ -> return Nothing
             writeFile x $ unlines res
