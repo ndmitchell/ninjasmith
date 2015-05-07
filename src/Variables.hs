@@ -21,7 +21,7 @@ addGroup op xs = do
     (mid, post) <- split midpost
     return $ pre ++ [op (show (hashUnique u) ++ ".ninja") mid] ++ post
 
-newAssign = liftM2 (,) (pick $ digits "v") (pick $ digits "" ++ digits "$v")
+newAssign = liftM2 (,) (pick $ digits "v") (fmap concat $ reps (0,3) $ pick $ digits "" ++ digits "$v")
 
 addTopVar xs = do
     (pre, post) <- split xs
