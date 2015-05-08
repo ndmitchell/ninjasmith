@@ -4,7 +4,12 @@ module Type(Stmt(..), Action(..), writeNinja) where
 
 import Control.Monad.Extra
 
-data Action = WriteNinja [Stmt] | WriteFile FilePath String | RunNinja [String] | Prepare (IO ())
+data Action
+    = WriteFile FilePath String
+    | CopyFile FilePath FilePath
+    | WriteNinja [Stmt]
+    | RunNinja [String]
+      deriving (Show,Read)
 
 data Stmt
     = Rule {ruleName :: String, ruleBind :: [(String, String)]}
@@ -13,7 +18,7 @@ data Stmt
     | Default {defName :: String}
     | Include {incExpr :: String, incBody :: [Stmt]}
     | Subninja {incExpr :: String, incBody :: [Stmt]}
-      deriving Show
+      deriving (Show,Read)
 
 writeNinja :: [Stmt] -> IO ()
 writeNinja = output "build.ninja"

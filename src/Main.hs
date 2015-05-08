@@ -11,6 +11,7 @@ import Data.List.Extra
 import Data.Maybe
 import Data.Hashable
 import Data.IORef
+import System.IO.Extra
 import Data.Tuple.Extra
 import System.Environment
 import System.FilePath
@@ -43,9 +44,9 @@ test actions = do
             let add = do x <- record; modifyIORef ref (x:)
             withCurrentDirectory ("temp-" ++ exe) $ do
                 forM_ (zip [1..] actions) $ \(i,x) -> case x of
-                    Prepare act -> act
-                    WriteNinja stmts -> writeNinja stmts
                     WriteFile file x -> writeFile file x
+                    CopyFile from to -> copyFile from to
+                    WriteNinja stmts -> writeNinja stmts
                     RunNinja args -> do
                         setEnv "RECORD" $ "record" ++ show i
                         system_ $ unwords $ exe:args; add
@@ -63,10 +64,11 @@ main = do
     examples <- listFiles "examples"
     forM_ (filter ((==) ".ninja" . takeExtension) examples) $ \ex -> do
         putStrLn $ "# Testing example " ++ takeFileName ex
-        test
-            [Prepare $ forM_ examples $ \x -> copyFile (".." </> x) (takeFileName x)
-            ,Prepare $ renameFile (takeFileName ex) "build.ninja"
-            ,RunNinja []]
+        acts <- map (read . drop 2) . takeWhile (/= "") . lines <$> readFile' ex
+        when (null acts) $ error $ "Example " ++ ex ++ " forgot its actions"
+        test $
+            [CopyFile (".." </> x) (if x == ex then "build.ninja" else takeFileName x) | x <- examples] ++
+            acts
 
     forM_ [1..10] $ \i -> do
         putStrLn $ "# Testing variables " ++ show i
