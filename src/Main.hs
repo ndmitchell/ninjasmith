@@ -16,6 +16,7 @@ import Data.Tuple.Extra
 import System.Environment
 import System.FilePath
 import qualified Data.ByteString.Char8 as BS
+import Dependencies
 import Variables
 import Type
 import Prelude
@@ -76,3 +77,7 @@ main = do
     forM_ [1..10] $ \i -> do
         putStrLn $ "# Testing variables " ++ show i
         test =<< variables
+
+    forM_ [1..10] $ \i -> do
+        putStrLn $ "# Testing dependencies " ++ show i
+        test =<< dependencies
