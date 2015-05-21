@@ -23,14 +23,16 @@ dependencies :: IO [Action]
 dependencies = do
     ds <- addDeps (map (,[]) $ digits "i") (digits "o")
     is <- reps (1,3) $ pick $ digits "i"
-    us <- replicateM (length is) unique
+    us1 <- replicateM (length $ digits "i") unique
+    us2 <- replicateM (length is) unique
     let nin = Rule "r" [("command","record --out $out --env RECORD --in $in")] :
-              [Build [a] "r" b [] [] [] | (a,b) <- ds]
+              [Build [a] "r" b [] [] [] | (a,b) <- ds, b /= []]
     return $
-        [WriteNinja nin
-        ,RunNinja []
+        [WriteNinja nin] ++
+        zipWith WriteFile (digits "i") us1 ++
+        [RunNinja []
         ,RunNinja []] ++
-        zipWith WriteFile is us ++
+        zipWith WriteFile is us2 ++
         [RunNinja []
         ,RunNinja []]
 
@@ -40,5 +42,5 @@ addDeps :: Eq a => [(a, [a])] -> [a] -> IO [(a, [a])]
 addDeps deps [] = return deps
 addDeps deps xs = do
     x <- pick xs
-    ds <- reps (0,length deps) $ pick deps
+    ds <- reps (1,length deps) $ pick deps
     addDeps ((x,map fst ds):deps) (delete x xs)
