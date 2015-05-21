@@ -1,0 +1,13 @@
+# WriteFile "input1" "x"
+# WriteFile "input2" "y"
+# RunNinja []
+# WriteFile "input1" "z"
+# RunNinja []
+# Fails "Ninja treats phony nodes as order-only"
+
+rule record
+    command = record --out $out --env RECORD
+
+build input1_: phony input1
+
+build output: record input2 input1_
