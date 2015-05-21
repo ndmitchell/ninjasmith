@@ -62,7 +62,10 @@ compileRecord :: IO ()
 compileRecord = do
     putStr "Compiling record... "
     createDirectoryIfMissing True "temp-record"
-    system_ "ghc --make src/Record.hs -outputdir temp-record -o temp-record/record.exe"
+    source <- getModificationTime "src/Record.hs"
+    dest <- try_ $ getModificationTime "temp-record/record.exe"
+    when (either (const True) (< source) dest) $
+        system_ "ghc --make src/Record.hs -outputdir temp-record -o temp-record/record.exe"
     putStrLn "done"
 
 
