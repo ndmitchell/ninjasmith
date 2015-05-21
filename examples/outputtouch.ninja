@@ -1,0 +1,10 @@
+# RunNinja []
+# WriteFile "output" "goodbye"
+# RunNinja []
+# Fails "Shake bug"
+
+rule record
+    # produces --lit hello
+    command = record --out $out --lit hello
+
+build output: record

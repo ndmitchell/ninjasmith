@@ -1,0 +1,8 @@
+# RunNinja []
+# RunNinja []
+
+rule record
+    # does not write to output
+    command = record --out log --env RECORD
+
+build output: record
