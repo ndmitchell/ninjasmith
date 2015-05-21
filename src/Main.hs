@@ -50,6 +50,9 @@ test actions = do
                     RunNinja args -> do
                         setEnv "RECORD" $ "record" ++ show i
                         system_ $ unwords $ exe:args; add
+                    Fails msg -> do
+                        putStrLn $ "EXPECTED FAILURE: " ++ msg
+                        writeIORef ref []
             xs <- readIORef ref
             return $ concat $ zipWith (\i xs -> map (first (i,)) xs) [1..] $ reverse xs
 

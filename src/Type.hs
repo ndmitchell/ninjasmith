@@ -9,6 +9,7 @@ data Action
     | CopyFile FilePath FilePath
     | WriteNinja [Stmt]
     | RunNinja [String]
+    | Fails String
       deriving (Show,Read)
 
 data Stmt
