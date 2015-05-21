@@ -58,12 +58,17 @@ test actions = do
             return $ concat $ zipWith (\i xs -> map (first (i,)) xs) [1..] $ reverse xs
 
 
-main :: IO ()
-main = do
+compileRecord :: IO ()
+compileRecord = do
     putStr "Compiling record... "
     createDirectoryIfMissing True "temp-record"
     system_ "ghc --make src/Record.hs -outputdir temp-record -o temp-record/record.exe"
     putStrLn "done"
+
+
+main :: IO ()
+main = do
+    compileRecord
 
     examples <- listFiles "examples"
     forM_ (filter ((==) ".ninja" . takeExtension) examples) $ \ex -> do
